@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,20 +20,27 @@ import {
   LogOut,
   Bell,
 } from "lucide-react";
+import { useAuth } from "../auth/AuthContext";
 
 interface NavbarProps {
   userName?: string;
   userAvatar?: string;
   notificationCount?: number;
-  onLogout?: () => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
-  userName = "Jane Doe",
   userAvatar = "",
   notificationCount = 3,
-  onLogout = () => console.log("Logout clicked"),
 }) => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const userName = user?.name || "User";
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <nav className="w-64 bg-[#0d121f] border-r border-[#1e2738] text-white flex flex-col h-screen">
       <div className="flex h-16 items-center border-b border-[#1e2738] px-4">
@@ -119,32 +126,60 @@ const Navbar: React.FC<NavbarProps> = ({
             <span className="text-sm font-medium">{userName}</span>
             <span className="text-xs text-gray-400">Pharmacist</span>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="ml-auto h-8 w-8 text-gray-400"
+          <div className="flex gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-gray-400"
+                >
+                  <Bell className="h-4 w-4" />
+                  {notificationCount > 0 && (
+                    <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                      {notificationCount > 9 ? "9+" : notificationCount}
+                    </span>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="bg-[#1a2133] border-[#1e2738] text-white"
               >
-                <Bell className="h-4 w-4" />
-                {notificationCount > 0 && (
-                  <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                    {notificationCount > 9 ? "9+" : notificationCount}
-                  </span>
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="bg-[#1a2133] border-[#1e2738] text-white"
-            >
-              <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-[#1e2738]" />
-              <DropdownMenuItem className="text-gray-300 hover:text-white hover:bg-[#232d42]">
-                <span>No new notifications</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-[#1e2738]" />
+                <DropdownMenuItem className="text-gray-300 hover:text-white hover:bg-[#232d42]">
+                  <span>No new notifications</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-gray-400"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="bg-[#1a2133] border-[#1e2738] text-white"
+              >
+                <DropdownMenuLabel>Account</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-[#1e2738]" />
+                <DropdownMenuItem
+                  className="text-gray-300 hover:text-white hover:bg-[#232d42]"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
     </nav>
