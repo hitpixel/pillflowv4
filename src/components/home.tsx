@@ -10,6 +10,9 @@ import {
   Pill,
   Settings,
   Users,
+  ScanLine,
+  Search,
+  History,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "./layout/Navbar";
@@ -31,6 +34,19 @@ const Home: React.FC = () => {
     <div className="flex min-h-screen bg-[#0a0e17]">
       <Navbar />
       <main className="flex-1 pt-6 pb-10 px-4">
+        <div className="bg-[#0d121f] text-white border-[#1e2738] p-6 rounded-lg mb-8">
+          <h1 className="text-2xl font-bold mb-2">Welcome, Jane Doe</h1>
+          <p className="text-gray-400">
+            It's{" "}
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}{" "}
+            - Have a great day!
+          </p>
+        </div>
         <div className="space-y-6 mb-8">
           <ActionButtons
             buttons={[
@@ -331,9 +347,6 @@ const Home: React.FC = () => {
 };
 
 export default Home;
-
-// Import the icons used in ActionButtons
-import { ScanLine, Search, History } from "lucide-react";
 
 function CollectionsChart() {
   return (
